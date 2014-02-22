@@ -117,9 +117,11 @@
 ;; methods at the same time you define instance variables. Let's do something like that.
 (def apply-message-to
   (fn [instance message args]
-    (let [class (eval (:__class_symbol__ instance))
-          method (or (message (:__instance_methods__ class) (message instance)))]
-      (apply method instance args))))
+    (let [class (eval (:__class_symbol__ instance))]
+      (or
+       (let [method (message (:__instance_methods__ class))]
+         (and method (apply method instance args)))
+       (message instance)))))
 
 (def Holder
   {
@@ -129,4 +131,6 @@
     :add-instance-values (fn [this held]
                            (assoc this :held held))}})
 
-(or (:a {:a 2}) (:a {:a 1}))
+(send-to (make Holder 'stuff') :helding)
+
+(:holding (make Holder 'stuff'))
