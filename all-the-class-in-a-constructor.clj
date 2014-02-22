@@ -1,5 +1,7 @@
 ;; All the class in a constructor
 
+(def point (make Point 1 1))
+
 (def make
   (fn [& args]
     (apply (first args) (rest args))))
