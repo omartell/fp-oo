@@ -166,3 +166,14 @@
    (assoc so-far kword (count so-far)))
  [:a :b :c]
  {})
+
+;; Exercise 6
+;; Change apply-message-to to use method-cache
+
+(def apply-message-to
+  (fn [instance message args]
+    (let [class (eval (:__class_symbol__ instance))
+          method (message (method-cache class))]
+      (apply method instance args))))
+
+(apply-message-to (make Point 2 2) :shift [1 1])
