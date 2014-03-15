@@ -1,4 +1,4 @@
-(ns fpoo.oopsie [:use [clojure.algo.monads]])
+(ns fp-oo.oopsie [:use [clojure.algo.monads]])
 
 (def decider
      (fn [value continuation]
