@@ -71,11 +71,13 @@
 
 ;; Write a function always that takes a value and produces a function that returns that value no matter
 ;; what its arguments are. That is:
-((always 8) 1 'a :foo)
 
 (def always
   (fn [arg]
     (fn [& ignored] arg)))
+
+
+((always 8) 1 'a :foo)
 
 ;; Exercise 7
 ;; To practice for this book, I wrote three earlier ones. Here are their ISBNs: 0131774115, 0977716614 and
