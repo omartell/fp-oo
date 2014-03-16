@@ -50,3 +50,8 @@
               even-bigger (* 2 big-number)]
              (repeat even-bigger :a)))
 
+(with-monad sequence-m
+  (domonad [a [1 2 3]
+            b (repeat a "hi!")]
+           [a b]))
+
