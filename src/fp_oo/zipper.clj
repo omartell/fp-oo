@@ -66,8 +66,9 @@
 
 
 ;; For the second set of exercises
+
 (def tumult
-     (fn [form]
+  (fn [form]
        (letfn [(helper [zipper]
                        (cond (zip/end? zipper)
                              zipper
@@ -105,13 +106,51 @@
 
                              :else
                              (-> zipper zip/next helper)))]
-       (-> form zip/seq-zip helper zip/root))))
+         (-> form zip/seq-zip helper zip/root))))
 
+;;If you’re like me, you understand code better after editing it.
+;There’s a lot of duplication in tumult. Factor it out into helper
+;functions.
+;;I’m rather pleased by my solution, so I suggest you take a look.
 
+(defn branch-root-eq?
+  [zipper form]
+  (and (zip/branch? zipper)
+       (= (-> zipper zip/down zip/node) form)))
 
+(defn refactored-tumult
+  [form]
+  (letfn [(helper [zipper]
+            (let [updated-zipper
+                  (cond
+                   (= (zip/node zipper) '+)
+                   (-> zipper
+                       (zip/replace 'PLUS))
 
+                   (branch-root-eq? zipper '-)
 
+                   (-> zipper
+                       (zip/append-child 55555))
 
+                   (branch-root-eq? zipper '*)
 
+                   (-> zipper
+                       (zip/replace '(/ 1 (+ 3 (- 0 9999)))))
 
+                   (= (zip/node zipper) '/)
+                   (-> zipper
+                       zip/right
+                       zip/remove
+                       zip/right
+                       zip/remove
+                       (zip/insert-right (-> zipper zip/right zip/node))
+                       (zip/insert-right (-> zipper zip/right zip/right zip/node)))
 
+                   :else
+                   zipper)]
+              (if (zip/end? (zip/next updated-zipper))
+                updated-zipper
+                (helper (zip/next updated-zipper)))))]
+    (-> form zip/seq-zip helper zip/root)))
+
+(tumult '(- 3 (+ 6 (+ 3 4) (* 2 1) (/ 8 3))))
